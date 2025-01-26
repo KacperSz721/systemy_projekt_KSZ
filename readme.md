@@ -4,6 +4,7 @@ Autor: Kacper Szady
 Projekt spełnia następujące kryteria:
 - aplikacja webowa (Flask): 15pkt,
 - wielkość zbioru - 25044 rekordy: 10pkt
+- przechowywanie zbioru danych w bazie danych SQLite: 10pkt
 - dodatkowe unikatowe cechy (13 wykorzystanych): 1.5pkt,
 - jedno unikatowe źródło: 5pkt,
 - filtry: 10pkt,
