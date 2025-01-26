@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Najpopularniejsze słowa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        h1 {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        h2 {
+            color: #4CAF50;
+            font-size: 1.5em;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-size: 1.1em;
+            margin-right: 10px;
+        }
+
+        select, button {
+            padding: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 200px;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        select {
+            width: 60%;
+            margin-right: 20px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .charts-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .chart {
+            background-color: white;
+            border-radius: 8px;
+            margin: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            width: 800px;
+            display: none; /* Domyślnie ukrywamy wykresy */
+        }
+
+        .chart img {
+            max-width: 100%;
+            height: 400px; /* Zwiększamy wysokość wykresu */
+            border-radius: 8px;
+        }
+
+        .no-data {
+            text-align: center;
+            font-size: 1.2em;
+            color: #d9534f;
+        }
+
+        /* Styl dla linku powrotu */
+        .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.1em;
+            color: #4CAF50;
+            text-decoration: none;
+            padding: 10px;
+            border: 1px solid #4CAF50;
+            border-radius: 5px;
+            background-color: white;
+            width: 200px;
+            margin: 0 auto;
+        }
+
+        .back-home:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Najpopularniejsze słowa w książkach dla każdego gatunku</h1>
+    <form method="get" action="{{ url_for('popular_words') }}">
+        <label for="genre">Wybierz gatunek:</label>
+        <select name="genre" id="genre" onchange="showChart(this)">
+            <option value="">Wszystkie</option>
+            {% for genre in genres %}
+                <option value="{{ genre }}" {% if genre == selected_genre %}selected{% endif %}>{{ genre }}</option>
+            {% endfor %}
+        </select>
+<!--        <button type="submit">Filtruj</button>-->
+    </form>
+
+    {% if charts %}
+        <div class="charts-container">
+            {% for genre, chart in charts.items() %}
+                <div class="chart" id="chart-{{ genre }}">
+                    <h2>{{ genre }}</h2>
+                    <img src="data:image/png;base64,{{ chart }}" alt="Wykres dla {{ genre }}">
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="no-data">Nie znaleziono danych dla wybranego gatunku.</p>
+    {% endif %}
+
+    <a href="/" class="back-home">Powrót do strony głównej</a>
+
+    <script>
+        // Funkcja do pokazania wykresu w zależności od wybranego gatunku
+        function showChart(selectElement) {
+            var genre = selectElement.value;
+            var allCharts = document.querySelectorAll('.chart');
+
+            allCharts.forEach(function(chart) {
+                chart.style.display = 'none';  // Ukryj wszystkie wykresy
+            });
+
+            if (genre) {
+                document.getElementById('chart-' + genre).style.display = 'block';  // Pokaż wykres dla wybranego gatunku
+            } else {
+                // Jeśli wybrano "Wszystkie", pokaż pierwszy wykres
+                allCharts[0].style.display = 'block';
+            }
+        }
+
+        // Domyślnie wyświetlamy pierwszy wykres
+        window.onload = function() {
+            var firstChart = document.querySelector('.chart');
+            if (firstChart) {
+                firstChart.style.display = 'block';
+            }
+        };
+    </script>
+
+</body>
+</html>

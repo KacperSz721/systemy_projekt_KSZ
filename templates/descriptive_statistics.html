@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statystyki opisowe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .chart-container {
+            width: 80%;
+            margin: 20px auto;
+            text-align: center;
+        }
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+        }
+        #chart-selector {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .no-data {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-home {
+            display: block;
+            width: 200px;
+            margin: 30px auto;
+            text-align: center;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-home:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Statystyki opisowe dla książek</h1>
+    </header>
+
+    <!-- Wybór wykresu -->
+    <form method="GET" id="chart-selector">
+        <label for="chart">Wybierz wykres:</label>
+        <select name="chart" id="chart" onchange="this.form.submit()">
+            <option value="category_share" {% if selected_chart == 'category_share' %}selected{% endif %}>Udział kategorii</option>
+            <option value="average_page_count" {% if selected_chart == 'average_page_count' %}selected{% endif %}>Średnia liczba stron</option>
+            <option value="format_share" {% if selected_chart == 'format_share' %}selected{% endif %}>Udział typu książki</option>
+            <option value="average_score" {% if selected_chart == 'average_score' %}selected{% endif %}>Średni wynik (avg_score)</option>
+        </select>
+    </form>
+
+    <!-- Pojemnik na wykres -->
+    <div class="chart-container">
+        {% if chart_image %}
+            <img src="data:image/png;base64,{{ chart_image }}" alt="Wykres" />
+        {% else %}
+            <div class="no-data">Brak danych do wyświetlenia.</div>
+        {% endif %}
+    </div>
+
+    <!-- Przycisk powrotu do strony głównej -->
+    <a href="/" class="back-home">Powrót do strony głównej</a>
+
+</body>
+</html>

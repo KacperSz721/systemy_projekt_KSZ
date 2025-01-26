@@ -1,0 +1,91 @@
+/* Styl dla tytułu strony */
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Dodanie cienia do tekstu */
+    color: #ffffff;
+}
+
+/* Styl dla przycisku powrotu, który jest zawsze na dole */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 15px;
+}
+
+footer a {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    width: 200px;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+footer a:hover {
+    background-color: #45a049;
+}
+
+/* Styl dla formularza wyszukiwania */
+form {
+    background-color: #c7c7c7;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex: 2;
+    text-align: center;
+}
+
+/* Pozostałe style */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    padding-bottom: 80px; /* Aby nie nakładało się na przycisk powrotu */
+}
+
+#results-container {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 30px;
+}
+
+li {
+    background-color: #ffffff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+strong {
+    font-size: 1.2rem;
+    color: #2c3e50;
+}
+
+em {
+    color: #7f8c8d;
+}
+
+a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}

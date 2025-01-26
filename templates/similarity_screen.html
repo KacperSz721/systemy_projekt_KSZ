@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyszukiwanie po podobieństwie</title>
+    <style>
+        header {
+            position: relative;
+            padding: 20px;
+            /*background-color: #4CAF50; !* Zielony kolor tła nagłówka *!*/
+            color: #202121
+            text-align: center;
+        }
+        h1 {
+            margin: 40px 0 0 0; /* Zwiększamy margines górny (top), aby oddzielić tytuł od kontenera */
+            font-size: 2.5em;
+            text-decoration: none;
+            color: #202121
+        }
+        .back-home {
+            display: inline-block;
+            background-color: #4CAF50; /* Zielone tło */
+            color: white;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            }
+
+        .back-home:hover {
+            background-color: #45a049; /* Ciemniejszy odcień zielonego na hover */
+            }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+function toggleDescription(index) {
+    const shortDesc = document.getElementById(`short-desc-${index}`);
+    const fullDesc = document.getElementById(`full-desc-${index}`);
+
+    if (shortDesc.style.display === "none") {
+        shortDesc.style.display = "inline";
+        fullDesc.style.display = "none";
+    } else {
+        shortDesc.style.display = "none";
+        fullDesc.style.display = "inline";
+    }
+}
+</script>
+</head>
+<body>
+<div class="links-container">
+    <header>
+        <h1>Wyszukiwanie książek po podobieństwie</h1>
+    </header>
+</div>
+<div id="search-and-filters-sim">
+      <form method="get">
+        <input type="text" name="search_query" value="{{ search_query }}" placeholder="Szukaj...">
+        <select name="similarity_type" id="similarity_type">
+            <option value="cosine_similarity" {% if similarity_measure == cosine_similarity %}selected{% endif %}>Cosine</option>
+            <!--<option value="dice_similarity" {% if similarity_measure == dice_similarity %}selected{% endif %}>Dice</option>-->
+            <option value="jaccard_sim" {% if similarity_measure == jaccard_sim %}selected{% endif %}>Jaccard</option>
+        </select>
+          <label for="lsi_enabled">Użyj LSI:</label>
+    <input type="checkbox" id="lsi_enabled" name="lsi_enabled" value="true" {% if lsi_enabled %}checked{% endif %}>
+         <p>Search by:</p>
+        <!-- Radio buttons do wyboru pola wyszukiwania -->
+    <div>
+        <label>
+            <input type="radio" name="search_by" value="title" {% if search_by == 'title' %}checked{% endif %}>
+            Tytuł
+        </label>
+        <label>
+            <input type="radio" name="search_by" value="author" {% if search_by == 'author' %}checked{% endif %}>
+            Autor
+        </label>
+    </div>
+               <button type="submit">Szukaj</button>
+    </form>
+</div>
+   <div id="results-container">
+    <h2>Search Results ({{ results_count }} books found):</h2>
+    {% if books %}
+        <ul>
+        {% for book in books %}
+            <li>
+                <strong>{{ book['title'] }}</strong> by {{ book['author'] }}
+                (Podobieństwo: {{ book['similarity_percentage'] }}%) (Odległość Levenshtein'a: {{ book['levenshtein_similarity'] }}% )<br>
+                <em>Year:</em> {{ book['year'] }},
+                <em>Format:</em> {{ book['format'] }},
+                <em>Genre:</em> {{ book['genre'] }},
+                <em>Language:</em> {{ book['language'] }}<br>
+                <p>
+                    <span id="short-desc-{{ loop.index }}">
+                        {{ book['description'] | truncate(50, True) }}
+                        <a id="toggle-link-{{ loop.index }}" href="#" class="description-toggle" onclick="toggleDescription({{ loop.index }}); return false;">Pokaż więcej</a>
+                    </span>
+                    <span id="full-desc-{{ loop.index }}" style="display: none;">
+                        {{ book['description'] }}
+                        <a href="#" class="description-toggle-hide" onclick="toggleDescription({{ loop.index }}); return false;">Ukryj</a>
+                    </span>
+                </p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</div>
+
+    <div>
+        {% if current_page > 1 %}
+        <a href="{{ url_for('similarity_search', page=current_page-1) }}">Poprzednia</a>
+        {% endif %}
+        <span>Strona {{ current_page }} z {{ total_pages }}</span>
+        {% if current_page < total_pages %}
+        <a href="{{ url_for('similarity_search', page=current_page+1) }}">Następna</a>
+        {% endif %}
+    </div>
+<a href="{{ url_for('index') }}" class="small-button">Powrót do strony głównej</a>
+</body>
+</html>

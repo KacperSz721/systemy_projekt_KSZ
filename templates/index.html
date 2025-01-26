@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="static/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books Search</title>
+    <style>
+        /* Stała szerokość kontenera książek */
+        #results-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Przycisk "Pokaż więcej" */
+        .description-toggle {
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+
+        /* Zmiana wyglądu przycisku w przypadku rozwiniętego opisu */
+        .description-toggle-hide {
+            display: inline-block;
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+
+        /* Filtry poziome */
+        #filters-panel {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .filter-group {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .filter-group select {
+            min-width: 150px;
+            padding: 5px;
+        }
+    </style>
+    <script>
+        // Funkcja pokazująca pełny opis książki
+        function toggleDescription(bookId) {
+            var shortDesc = document.getElementById('short-desc-' + bookId);
+            var fullDesc = document.getElementById('full-desc-' + bookId);
+            var toggleLink = document.getElementById('toggle-link-' + bookId);
+
+            if (shortDesc.style.display === 'none') {
+                shortDesc.style.display = 'block';
+                fullDesc.style.display = 'none';
+                toggleLink.innerHTML = 'Pokaż więcej';
+            } else {
+                shortDesc.style.display = 'none';
+                fullDesc.style.display = 'block';
+                toggleLink.innerHTML = 'Ukryj';
+            }
+        }
+
+         // Funkcja przełączająca widoczność opisu
+    function toggleDescription(index) {
+        var shortDesc = document.getElementById("short-desc-" + index);
+        var fullDesc = document.getElementById("full-desc-" + index);
+        if (shortDesc.style.display === "none") {
+            shortDesc.style.display = "inline";
+            fullDesc.style.display = "none";
+        } else {
+            shortDesc.style.display = "none";
+            fullDesc.style.display = "inline";
+        }
+    }
+
+    // Funkcja przełączająca widoczność nazw własnych
+    function toggleNamedEntities(index) {
+        var namedEntities = document.getElementById("named-entities-" + index);
+        var button = document.getElementById("show-named-entities-" + index);
+
+        if (namedEntities.style.display === "none" || !namedEntities.style.display) {
+            namedEntities.style.display = "inline";
+            button.innerHTML = "Ukryj nazwy własne";
+        } else {
+            namedEntities.style.display = "none";
+            button.innerHTML = "Pokaż nazwy własne";
+        }
+    }
+
+    function clearFilters() {
+        // Reset all filter inputs to their default values
+        document.querySelectorAll('#filters-panel select').forEach(select => select.value = '');
+        document.querySelector('input[name="search_query"]').value = '';
+
+        // Submit the form to reload all books
+        const form = document.querySelector('form');
+        form.action = "/"; // Ustawienie akcji formularza na stronę główną
+        form.submit();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const forms = document.querySelectorAll(".named-entities-form");
+
+    forms.forEach((form, index) => {
+        const button = form.querySelector(".named-entities-button");
+        const bookTitle = form.getAttribute("data-book-title");
+        const resultDiv = document.getElementById(`named-entities-${index + 1}`);
+
+        button.addEventListener("click", function () {
+            if (resultDiv.style.display === "block") {
+                // Jeśli już wyświetlone, ukryj i zresetuj przycisk
+                resultDiv.style.display = "none";
+                button.textContent = "Pokaż nazwy własne";
+            } else {
+                // Wyślij żądanie POST na serwer
+                const formData = new FormData(form);
+
+                fetch(location.href, {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.named_entities) {
+                        // Wyświetlenie nazw własnych
+                        resultDiv.style.display = "block";
+                        resultDiv.innerHTML = `<strong>Nazwy własne:</strong> ${data.named_entities.join(", ")}`;
+                        button.textContent = "Ukryj nazwy własne";
+                    } else {
+                        console.error("Nie znaleziono nazw własnych.");
+                    }
+                })
+                .catch(error => console.error("Błąd w trakcie żądania:", error));
+            }
+        });
+    });
+});
+    </script>
+</head>
+<body>
+    <header>
+<!--        <h1>Books Database</h1>-->
+        <!-- Przycisk do przejścia na ekran wyszukiwania po podobieństwie -->
+        <div class="links-container">
+            <h1>Books Database</h1>
+        <a href="{{ url_for('similarity_search') }}" class="btn">Wyszukaj po podobieństwie</a>
+        <a href="{{ url_for('popular_words') }}">Najpopularniejsze słowa według gatunku</a>
+        <a href="{{ url_for('popular_words_by_year') }}">Najpopularniejsze słowa według roku</a>
+            <a href="{{ url_for('descriptive_statistics') }}">Statystyki opisowe</a>
+    </div>
+    </header>
+
+
+    <main>
+        <!-- Wyszukiwanie i panel filtrów -->
+<div id="search-and-filters">
+    <form method="GET">
+        <input type="text" name="search_query" placeholder="Search by title or author" value="{{ search_query }}">
+        <button type="submit" class="button">Search</button>
+
+        <!-- Filtry poziome -->
+        <div id="filters-panel">
+            <div class="filter-group">
+                <label for="year">Year:</label>
+                <select name="year" id="year" multiple>
+                    <option value="">--Select Year--</option>
+                    {% for value in filter_options['year'] %}
+                        <option value="{{ value }}" {% if value in filters['year'] %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="format">Format:</label>
+                <select name="format" id="format" multiple>
+                    <option value="">--Select Format--</option>
+                    {% for value in filter_options['format'] %}
+                        <option value="{{ value }}" {% if value in filters['format'] %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="genre">Genre:</label>
+                <select name="genre" id="genre" multiple>
+                    <option value="">--Select Genre--</option>
+                    {% for value in filter_options['genre'] %}
+                        <option value="{{ value }}" {% if value in filters['genre'] %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="language">Language:</label>
+                <select name="language" id="language" multiple>
+                    <option value="">--Select Language--</option>
+                    {% for value in filter_options['language'] %}
+                        <option value="{{ value }}" {% if value in filters['language'] %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Sortowanie -->
+            <div class="filter-group">
+                <label for="sort_by">Sort by:</label>
+                <select name="sort_by" id="sort_by">
+                    <option value="reviews" {% if sort_by == 'reviews' %}selected{% endif %}>Reviews</option>
+                    <option value="ratings" {% if sort_by == 'ratings' %}selected{% endif %}>Ratings</option>
+                    <option value="page_count" {% if sort_by == 'page_count' %}selected{% endif %}>Page Count</option>
+                    <option value="avg_score" {% if sort_by == 'avg_score' %}selected{% endif %}>Average Score</option>
+                </select>
+            </div>
+
+            <!-- Sortowanie rosnąco/malejąco -->
+            <div class="filter-group">
+                <label for="sort_order">Order:</label>
+                <select name="sort_order" id="sort_order">
+                    <option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>Descending</option>
+                    <option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>Ascending</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="has_description">Has Description:</label>
+                <select name="has_description" id="has_description">
+                    <option value="">--Select--</option>
+                    <option value="True" {% if filters['has_description'] == 'True' %}selected{% endif %}>True</option>
+                    <option value="False" {% if filters['has_description'] == 'False' %}selected{% endif %}>False</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Przyciski zastosuj i usuń filtry -->
+        <div class="filter-buttons">
+            <button type="submit" class="small-button">Apply Filters</button>
+            <button type="button" class="small-button" onclick="clearFilters()">Clear Filters</button>
+        </div>
+    </form>
+</div>
+        </div>
+    </form>
+</div>
+
+
+        <!-- Wyniki wyszukiwania -->
+        <div id="results-container">
+            <h2>Search Results ({{ results_count }} books found):</h2>
+            {% if books %}
+                <ul>
+                {% for book in books %}
+                    <li>
+                        <strong>{{ book['title'] }}</strong> by {{ book['author'] }}<br>
+                        <em>Year:</em> {{ book['year'] }},
+                        <em>Format:</em> {{ book['format'] }},
+                        <em>Genre:</em> {{ book['genre'] }},
+                        <em>Language:</em> {{ book['language'] }}<br>
+                        <em>Rating Count:</em> {{ book['ratings'] }}
+                        <em>Pages:</em> {{ book['page_count'] }}
+                        <em>Avg Score:</em> {{ book['avg_score'] }}
+                        <em>Reviews:</em> {{ book['reviews'] }}<br>
+                        <p>
+                            <span id="short-desc-{{ loop.index }}">
+                                {{ book['description'] | truncate(50, True) }}
+                                <a id="toggle-link-{{ loop.index }}" href="#" class="description-toggle" onclick="toggleDescription({{ loop.index }}); return false;">Pokaż więcej</a>
+                            </span>
+                            <span id="full-desc-{{ loop.index }}" style="display: none;">
+                                {{ book['description'] }}
+                                <a href="#" class="description-toggle-hide" onclick="toggleDescription({{ loop.index }}); return false;">Ukryj</a>
+                            </span>
+                        </p>
+                        <!-- Formularz dla przycisku "Pokaż nazwy własne" -->
+                <form method="POST" class="named-entities-form" data-book-title="{{ book['title'] }}">
+    <input type="hidden" name="title" value="{{ book['title'] }}">
+    <button type="button" id="show-named-entities-{{ loop.index }}"
+            class="named-entities-button">
+        {% if selected_book_id == book['title'] %}
+            {% if named_entities %}
+                Ukryj nazwy własne
+            {% else %}
+                Pokaż nazwy własne
+            {% endif %}
+        {% else %}
+            Pokaż nazwy własne
+        {% endif %}
+    </button>
+</form>
+<div class="named-entities" id="named-entities-{{ loop.index }}" style="display: none;">
+    <!-- W tym miejscu będą wyświetlane nazwy własne -->
+</div>
+
+                <!-- Wyświetlanie nazw własnych tylko dla wybranej książki -->
+                {% if named_entities and selected_book_id == book['title'] %}
+                    <div class="named-entities" id="named-entities-{{ loop.index }}" style="display: none;">
+                        <strong>Nazwy własne:</strong>
+                        <span>
+                            {% for entity in named_entities %}
+                                <span class="entity">{{ entity }}</span>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                {% endif %}
+                    </li>
+                {% endfor %}
+                </ul>
+
+                 <div id="pagination">
+                    {% if total_pages > 1 %}
+                        <a href="?page=1{% if search_query %}&search_query={{ search_query }}{% endif %}{% if filter_column %}&filter_column={{ filter_column }}{% endif %}{% if filter_value %}&filter_value={{ filter_value }}{% endif %}" class="btn-back-to-start">
+                            &larr; Wróć na początek </a>
+                    <!-- Przyciski "Poprzednia" -->
+                    {% if current_page > 1 %}
+                        <a href="?page={{ current_page - 1 }}{% if search_query %}&search_query={{ search_query }}{% endif %}{% if filter_column %}&filter_column={{ filter_column }}{% endif %}{% if filter_value %}&filter_value={{ filter_value }}{% endif %}">
+                            &laquo; Previous
+                        </a>
+                    {% endif %}
+
+                    <!-- Pierwsze 5 stron od aktualnej -->
+                    {% for page in range(current_page, min(current_page + 5, total_pages + 1)) %}
+                        {% if page == current_page %}
+                            <span class="current-page">{{ page }}</span>
+                        {% else %}
+                            <a href="?page={{ page }}{% if search_query %}&search_query={{ search_query }}{% endif %}{% if filter_column %}&filter_column={{ filter_column }}{% endif %}{% if filter_value %}&filter_value={{ filter_value }}{% endif %}">
+                                {{ page }}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+
+                    <!-- Ostatnia strona -->
+                    {% if current_page + 5 < total_pages %}
+                        <span>...</span>
+                        <a href="?page={{ total_pages }}{% if search_query %}&search_query={{ search_query }}{% endif %}{% if filter_column %}&filter_column={{ filter_column }}{% endif %}{% if filter_value %}&filter_value={{ filter_value }}{% endif %}">
+                            {{ total_pages }}
+                        </a>
+                    {% endif %}
+
+                    <!-- Przyciski "Następna" -->
+                    {% if current_page < total_pages %}
+                        <a href="?page={{ current_page + 1 }}{% if search_query %}&search_query={{ search_query }}{% endif %}{% if filter_column %}&filter_column={{ filter_column }}{% endif %}{% if filter_value %}&filter_value={{ filter_value }}{% endif %}">
+                            Next &raquo;
+                        </a>
+                    {% endif %}
+                    {% endif %}
+                    </div>
+                {% else %}
+                    <p>No books found.</p>
+                {% endif %}
+            </div>
+    </main>
+
+    <footer>
+        <p>&copy; {{ current_year }} Books Database</p>
+    </footer>
+</body>
+</html>
