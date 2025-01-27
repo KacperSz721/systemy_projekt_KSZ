@@ -129,7 +129,7 @@ def index():
             named_entities = extract_named_entities_rule_based(description)
             return jsonify({"success": True, "named_entities": named_entities})
 
-        return jsonify({"success": False, "error": "Nie znaleziono książki lub opisu."})
+        return jsonify({"success": False, "error": "Not found."})
     conn.close()
 
     return render_template(
@@ -169,8 +169,8 @@ def descriptive_statistics():
         data = conn.execute(query).fetchall()
         labels = [row[0] for row in data]
         values = [row[1] for row in data]
-        chart_image = generate_bar_chart(labels, values, 'Średnia liczba stron dla kategorii', 'Kategoria',
-                                         'Średnia liczba stron')
+        chart_image = generate_bar_chart(labels, values, 'Average page number for category', 'Category',
+                                         'Average page number')
 
     elif selected_chart == 'average_score':
         # Średnia wartość cechy avg_score
@@ -184,8 +184,8 @@ def descriptive_statistics():
         data = conn.execute(query).fetchall()
         labels = [row[0] for row in data]
         values = [row[1] for row in data]
-        chart_image = generate_bar_chart(labels, values, 'Średnia wartość avg_score dla kategorii', 'Kategoria',
-                                         'Średnia avg_score')
+        chart_image = generate_bar_chart(labels, values, 'Average score for category', 'Category',
+                                         'Average score')
 
     elif selected_chart == 'category_share':
         # Udział poszczególnych kategorii w całości książek
@@ -199,7 +199,7 @@ def descriptive_statistics():
         data = conn.execute(query).fetchall()
         labels = [row[0] for row in data]
         values = [row[1] for row in data]
-        chart_image = create_tree_map(labels, values, 'Udział kategorii w całości książek')
+        chart_image = create_tree_map(labels, values, 'Category share')
 
     elif selected_chart == 'format_share':
         # Udział formatów książek w całości
@@ -213,7 +213,7 @@ def descriptive_statistics():
         data = conn.execute(query).fetchall()
         labels = [row[0] for row in data]
         values = [row[1] for row in data]
-        chart_image = create_tree_map(labels, values, 'Udział formatów książek w całości')
+        chart_image = create_tree_map(labels, values, 'Format share')
 
     conn.close()
 

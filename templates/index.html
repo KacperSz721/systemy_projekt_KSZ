@@ -146,10 +146,10 @@
         <!-- Przycisk do przejścia na ekran wyszukiwania po podobieństwie -->
         <div class="links-container">
             <h1>Books Database</h1>
-        <a href="{{ url_for('similarity_search') }}" class="btn">Wyszukaj po podobieństwie</a>
-        <a href="{{ url_for('popular_words') }}">Najpopularniejsze słowa według gatunku</a>
-        <a href="{{ url_for('popular_words_by_year') }}">Najpopularniejsze słowa według roku</a>
-            <a href="{{ url_for('descriptive_statistics') }}">Statystyki opisowe</a>
+        <a href="{{ url_for('similarity_search') }}" class="btn">Search by similarity</a>
+        <a href="{{ url_for('popular_words') }}">The most popular words by genre</a>
+        <a href="{{ url_for('popular_words_by_year') }}">The most popular words by year</a>
+            <a href="{{ url_for('descriptive_statistics') }}">Descriptive statistics</a>
     </div>
     </header>
 
@@ -264,11 +264,11 @@
                         <p>
                             <span id="short-desc-{{ loop.index }}">
                                 {{ book['description'] | truncate(50, True) }}
-                                <a id="toggle-link-{{ loop.index }}" href="#" class="description-toggle" onclick="toggleDescription({{ loop.index }}); return false;">Pokaż więcej</a>
+                                <a id="toggle-link-{{ loop.index }}" href="#" class="description-toggle" onclick="toggleDescription({{ loop.index }}); return false;">Show more</a>
                             </span>
                             <span id="full-desc-{{ loop.index }}" style="display: none;">
                                 {{ book['description'] }}
-                                <a href="#" class="description-toggle-hide" onclick="toggleDescription({{ loop.index }}); return false;">Ukryj</a>
+                                <a href="#" class="description-toggle-hide" onclick="toggleDescription({{ loop.index }}); return false;">Hide</a>
                             </span>
                         </p>
                         <!-- Formularz dla przycisku "Pokaż nazwy własne" -->
@@ -278,12 +278,12 @@
             class="named-entities-button">
         {% if selected_book_id == book['title'] %}
             {% if named_entities %}
-                Ukryj nazwy własne
+                Hide proper nouns
             {% else %}
-                Pokaż nazwy własne
+                Show proper nouns
             {% endif %}
         {% else %}
-            Pokaż nazwy własne
+            Show proper nouns
         {% endif %}
     </button>
 </form>
@@ -294,7 +294,7 @@
                 <!-- Wyświetlanie nazw własnych tylko dla wybranej książki -->
                 {% if named_entities and selected_book_id == book['title'] %}
                     <div class="named-entities" id="named-entities-{{ loop.index }}" style="display: none;">
-                        <strong>Nazwy własne:</strong>
+                        <strong>Proper nouns:</strong>
                         <span>
                             {% for entity in named_entities %}
                                 <span class="entity">{{ entity }}</span>{% if not loop.last %}, {% endif %}
@@ -309,7 +309,7 @@
                  <div id="pagination">
                     {% if total_pages > 1 %}
                         <a href="?page=1{% if search_query %}&search_query={{ search_query }}{% endif %}{% if filter_column %}&filter_column={{ filter_column }}{% endif %}{% if filter_value %}&filter_value={{ filter_value }}{% endif %}" class="btn-back-to-start">
-                            &larr; Wróć na początek </a>
+                            &larr; Back to start page </a>
                     <!-- Przyciski "Poprzednia" -->
                     {% if current_page > 1 %}
                         <a href="?page={{ current_page - 1 }}{% if search_query %}&search_query={{ search_query }}{% endif %}{% if filter_column %}&filter_column={{ filter_column }}{% endif %}{% if filter_value %}&filter_value={{ filter_value }}{% endif %}">

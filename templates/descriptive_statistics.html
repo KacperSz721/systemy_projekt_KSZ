@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statystyki opisowe</title>
+    <title>Descriptive statistics</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,17 +55,17 @@
 </head>
 <body>
     <header>
-        <h1>Statystyki opisowe dla książek</h1>
+        <h1>Descriptive statistics</h1>
     </header>
 
     <!-- Wybór wykresu -->
     <form method="GET" id="chart-selector">
-        <label for="chart">Wybierz wykres:</label>
+        <label for="chart">Select a chart:</label>
         <select name="chart" id="chart" onchange="this.form.submit()">
-            <option value="category_share" {% if selected_chart == 'category_share' %}selected{% endif %}>Udział kategorii</option>
-            <option value="average_page_count" {% if selected_chart == 'average_page_count' %}selected{% endif %}>Średnia liczba stron</option>
-            <option value="format_share" {% if selected_chart == 'format_share' %}selected{% endif %}>Udział typu książki</option>
-            <option value="average_score" {% if selected_chart == 'average_score' %}selected{% endif %}>Średni wynik (avg_score)</option>
+            <option value="category_share" {% if selected_chart == 'category_share' %}selected{% endif %}>Category share</option>
+            <option value="average_page_count" {% if selected_chart == 'average_page_count' %}selected{% endif %}>Average number of pages</option>
+            <option value="format_share" {% if selected_chart == 'format_share' %}selected{% endif %}>Format share</option>
+            <option value="average_score" {% if selected_chart == 'average_score' %}selected{% endif %}>Average score</option>
         </select>
     </form>
 
@@ -74,12 +74,12 @@
         {% if chart_image %}
             <img src="data:image/png;base64,{{ chart_image }}" alt="Wykres" />
         {% else %}
-            <div class="no-data">Brak danych do wyświetlenia.</div>
+            <div class="no-data">No data to show.</div>
         {% endif %}
     </div>
 
     <!-- Przycisk powrotu do strony głównej -->
-    <a href="/" class="back-home">Powrót do strony głównej</a>
+    <a href="/" class="back-home">Back to main page</a>
 
 </body>
 </html>

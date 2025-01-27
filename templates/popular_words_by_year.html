@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Najpopularniejsze Słowa według Roku</title>
+    <title>The most popular words by year</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -98,18 +98,18 @@
     </style>
 </head>
 <body>
-    <h1>Najpopularniejsze Słowa w Książkach z Roku {{ year }}</h1>
+    <h1>The most popular words in books from {{ year }}</h1>
 
     <!-- Formularz do wyboru roku -->
     <form method="post">
-        <label for="year">Wybierz rok:</label>
+        <label for="year">Select year:</label>
         <input type="number" id="year" name="year" value="{{ year }}">
-        <button type="submit">Pokaż chmurę słów</button>
+        <button type="submit">Show word cloud</button>
     </form>
 
     <h2>Chmura słów:</h2>
     <img src="data:image/png;base64,{{ wordcloud_img }}" alt="Chmura słów">
 
-    <p><a href="/">Wróć na stronę główną</a></p>
+    <p><a href="/">Back to main page</a></p>
 </body>
 </html>

@@ -93,9 +93,9 @@ def create_bar_chart(data, genre):
 
     plt.figure(figsize=(10, 6))
     plt.bar(words, counts, color='skyblue')
-    plt.title(f"Najpopularniejsze słowa w gatunku: {genre}")
-    plt.xlabel("Słowa")
-    plt.ylabel("Liczba wystąpień")
+    plt.title(f"The most popular words for: {genre}")
+    plt.xlabel("Words")
+    plt.ylabel("Number of occurrences")
     plt.xticks(rotation=45)
     plt.tight_layout()
 

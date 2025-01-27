@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Najpopularniejsze słowa</title>
+    <title>The most popular words</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -124,11 +124,11 @@
 </head>
 <body>
 
-    <h1>Najpopularniejsze słowa w książkach dla każdego gatunku</h1>
+    <h1>The most popular words by genre</h1>
     <form method="get" action="{{ url_for('popular_words') }}">
-        <label for="genre">Wybierz gatunek:</label>
+        <label for="genre">Select genre:</label>
         <select name="genre" id="genre" onchange="showChart(this)">
-            <option value="">Wszystkie</option>
+            <option value="">All</option>
             {% for genre in genres %}
                 <option value="{{ genre }}" {% if genre == selected_genre %}selected{% endif %}>{{ genre }}</option>
             {% endfor %}
@@ -141,15 +141,15 @@
             {% for genre, chart in charts.items() %}
                 <div class="chart" id="chart-{{ genre }}">
                     <h2>{{ genre }}</h2>
-                    <img src="data:image/png;base64,{{ chart }}" alt="Wykres dla {{ genre }}">
+                    <img src="data:image/png;base64,{{ chart }}" alt="Chart for {{ genre }}">
                 </div>
             {% endfor %}
         </div>
     {% else %}
-        <p class="no-data">Nie znaleziono danych dla wybranego gatunku.</p>
+        <p class="no-data">No data for choosen genre.</p>
     {% endif %}
 
-    <a href="/" class="back-home">Powrót do strony głównej</a>
+    <a href="/" class="back-home">Back to main page</a>
 
     <script>
         // Funkcja do pokazania wykresu w zależności od wybranego gatunku
