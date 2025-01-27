@@ -13,7 +13,7 @@ nltk.download('stopwords')
 def extract_named_entities_rule_based(text):
 
     ENGLISH_STOPWORDS = set(stopwords.words('english'))
-    POLISH_STOPWORDS = set(['Ta', 'Jego', 'Jej', "Jemu"])  # Dodatkowe polskie stopwords
+    POLISH_STOPWORDS = set(['Ta', 'Jego', 'Jej', "Jemu","W","I","Książka","Lektura","Książce"])  # Dodatkowe polskie stopwords
     STOPWORDS_pl = set(get_stopwords('pl'))  # Użycie niestandardowych stop-words
 
     pattern = r'\b\w*(jąc|ść|nie|ąca|ący|ące|az|na|niej|łam|łem|am)\b'

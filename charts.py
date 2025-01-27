@@ -26,8 +26,8 @@ POLISH_STOPWORDS =set(['jego', 'jej', 'oni', 'także', 'tego', 'tak', 'jako', 't
     'będzie','life','również','latach','było','swoje','swoją','wiele','wielu','świata','można','wieku','sposób',
     'new','i"m','he"s','ktoś','serii','między','którzy','nawet','którym','zarówno','autora','człowieka'
     'jaki','jaka','jakie','jakim','historii','polski','polsce','polskim','polskiego','polskich','historię','były',
-    'wojny','temat','przy','w','jak','innych','lecz','coś','swojego','ani','wciąż','bowiem','mogą','miała','miał',
-    'końcu','m','teraz','nie','takich','swój','mój','moje','dwoje','wie','nikt','ponad','przedstawia','czy','s','czyli'])
+    'wojny','temat','przy','W','jak','innych','lecz','coś','swojego','ani','wciąż','bowiem','mogą','miała','miał',
+    'końcu','m','teraz','nie','takich','swój','mój','moje','dwoje','wie','nikt','ponad','przedstawia','czy','S','czyli'])
 
 STOPWORDS = ENGLISH_STOPWORDS | POLISH_STOPWORDS | STOPWORDS_pl
 
