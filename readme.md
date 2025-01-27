@@ -1,7 +1,7 @@
-Systemy wyszukiwawcze projekt Autor: Kacper Szady
+Systemy wyszukiwawcze projekt 
+Autor: Kacper Szady
 
 Projekt spełnia następujące kryteria:
-
 - aplikacja webowa (Flask): 15pkt,
 - wielkość zbioru - 25044 rekordy: 10pkt
 - przechowywanie zbioru danych w bazie danych SQLite: 10pkt
